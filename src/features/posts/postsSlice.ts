@@ -20,8 +20,8 @@ export interface Post {
   title: string
   body: string
   userId?: string
-  date: string
-  reactions: PostReactions
+  date?: string
+  reactions?: PostReactions
 }
 
 interface PostsState {
@@ -46,6 +46,20 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
     }
   }
 })
+
+export const addNewPost = createAsyncThunk(
+  'posts/addNewPost',
+  async (initialPost: Post) => {
+    try {
+      const response = await axios.post(POSTS_URL, initialPost)
+      return response.data
+    } catch (error) {
+      if (error instanceof Error) {
+        return error.message
+      }
+    }
+  }
+)
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -80,7 +94,7 @@ const postsSlice = createSlice({
     ) {
       const { postId, reaction } = action.payload
       const existingPost = state.posts.find((post) => post.id === postId)
-      if (existingPost) {
+      if (existingPost && existingPost.reactions) {
         existingPost.reactions[reaction]++
       }
     },
@@ -113,6 +127,19 @@ const postsSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message || null
+      })
+      .addCase(addNewPost.fulfilled, (state, action) => {
+        action.payload.userId = Number(action.payload.userId)
+        action.payload.date = new Date().toISOString()
+        action.payload.reactions = {
+          thumbsUp: 0,
+          wow: 0,
+          heart: 0,
+          rocket: 0,
+          coffee: 0,
+        }
+
+        state.posts.push(action.payload)
       })
   },
 })
