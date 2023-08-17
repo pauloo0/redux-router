@@ -6,6 +6,7 @@ interface Post {
   id: string
   title: string
   content: string
+  userId: string
 }
 
 interface PostsState {
@@ -18,11 +19,13 @@ const initialState: PostsState = {
       id: '1',
       title: 'Learning Redux Toolkit',
       content: "I've heard good things.",
+      userId: '0',
     },
     {
       id: '2',
       title: 'Slices...',
       content: 'The more I say slice, the more I want pizza.',
+      userId: '1',
     },
   ],
 }
@@ -35,12 +38,13 @@ const postsSlice = createSlice({
       reducer(state, action: PayloadAction<Post>) {
         state.posts.push(action.payload)
       },
-      prepare(title: string, content: string) {
+      prepare(title: string, content: string, userId: string) {
         return {
           payload: {
             id: nanoid(), // nanoid is a function from redux toolkit that generates a unique ID string
             title,
             content,
+            userId,
           },
         }
       },
