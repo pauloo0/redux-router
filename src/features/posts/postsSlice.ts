@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { RootState } from '../../utils/types'
+import { RootState } from '../../app/types'
 
 const initialState = {
   posts: [

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { increment, decrement, reset, incrementByAmount } from './counterSlice'
-import { RootState } from '../../utils/types'
+import { RootState } from '../../app/types'
 
 const Counter: React.FC = () => {
   const count = useSelector((state: RootState) => state.counter.count)
