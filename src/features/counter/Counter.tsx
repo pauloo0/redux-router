@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+
+import { useAppSelector, useAppDispatch } from '../../app/hooks'
+
 import { increment, decrement, reset, incrementByAmount } from './counterSlice'
-import { RootState } from '../../app/types'
 
 const Counter: React.FC = () => {
-  const count = useSelector((state: RootState) => state.counter.count)
-  const dispatch = useDispatch()
+  const count = useAppSelector((state) => state.counter.count)
+  const dispatch = useAppDispatch()
 
   const [incrementAmount, setIncrementAmount] = useState('0')
 
@@ -17,7 +18,7 @@ const Counter: React.FC = () => {
   }
 
   return (
-    <section className='h-screen text-center flex flex-col align-center justify-center bg-yellow-50'>
+    <section className='h-screen text-center flex flex-col align-center justify-center'>
       <p className='text-7xl'>{count}</p>
       <div className='mt-8 mb-4 flex align-center justify-center space-x-4'>
         <button
@@ -39,6 +40,7 @@ const Counter: React.FC = () => {
           type='text'
           value={incrementAmount}
           onChange={(e) => setIncrementAmount(e.target.value)}
+          className='text-slate-900'
         />
         <button
           className='text-4xl bg-slate-400 text-center'
