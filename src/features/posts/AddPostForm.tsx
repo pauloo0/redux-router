@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { useNavigate } from 'react-router-dom'
 
 import { addNewPost } from './postsSlice'
 import { selectAllUsers } from '../users/usersSlice'
 
 const AddPostForm: React.FC = () => {
+  const navigate = useNavigate()
+
   const dispatch = useAppDispatch()
 
   const [title, setTitle] = useState('')
@@ -39,6 +42,7 @@ const AddPostForm: React.FC = () => {
         setTitle('')
         setContent('')
         setUserId('')
+        navigate('/')
       } catch (error) {
         console.log('Failed to save the post: ', error)
       } finally {
