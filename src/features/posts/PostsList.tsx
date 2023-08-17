@@ -27,9 +27,13 @@ const PostsList: React.FC = () => {
   if (postsStatus === 'loading') {
     content = <p>"Loading..."</p>
   } else if (postsStatus === 'succeeded') {
-    const orderedPosts = posts
-      .slice()
-      .sort((a, b) => b.date.localeCompare(a.date))
+    const orderedPosts = posts.slice().sort((a, b) => {
+      if (a.date && b.date) {
+        return b.date.localeCompare(a.date)
+      } else {
+        return 0
+      }
+    })
     content = orderedPosts.map((post) => (
       <PostsExcerpt key={post.id} post={post} />
     ))

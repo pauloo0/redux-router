@@ -6,17 +6,17 @@ import { selectPostById } from './postsSlice'
 import PostAuthor from './PostAuthor'
 import TimeAgo from './TimeAgo'
 import ReactionButtons from './ReactionButtons'
+import PostNotFound from './PostNotFound'
+
+import { useParams } from 'react-router-dom'
 
 const SinglePostPage: React.FC = () => {
-  const postId = '1'
-  const post = useAppSelector((state) => selectPostById(state, postId))
+  const { postId } = useParams<{ postId: string }>()
+
+  const post = useAppSelector((state) => selectPostById(state, Number(postId)))
 
   if (!post) {
-    return (
-      <section>
-        <h2>Post not found!</h2>
-      </section>
-    )
+    return <PostNotFound />
   }
 
   return (
