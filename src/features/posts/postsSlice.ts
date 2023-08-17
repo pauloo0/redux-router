@@ -1,8 +1,11 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit'
+import { createSlice, nanoid, createAsyncThunk } from '@reduxjs/toolkit'
+import { sub } from 'date-fns' // date-fns is a library that provides functions for manipulating dates
+import axios from 'axios'
+
+const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts'
+
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../../app/store'
-
-import { sub } from 'date-fns' // date-fns is a library that provides functions for manipulating dates
 
 interface PostReactions {
   thumbsUp: number
@@ -15,7 +18,7 @@ interface PostReactions {
 export interface Post {
   id: string
   title: string
-  content: string
+  body: string
   userId?: string
   date: string
   reactions: PostReactions
@@ -23,38 +26,26 @@ export interface Post {
 
 interface PostsState {
   posts: Post[]
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: string | null
 }
 
 const initialState: PostsState = {
-  posts: [
-    {
-      id: '1',
-      title: 'Learning Redux Toolkit',
-      content: "I've heard good things.",
-      date: sub(new Date(), { minutes: 10 }).toISOString(),
-      reactions: {
-        thumbsUp: 0,
-        wow: 0,
-        heart: 0,
-        rocket: 0,
-        coffee: 0,
-      },
-    },
-    {
-      id: '2',
-      title: 'Slices...',
-      content: 'The more I say slice, the more I want pizza.',
-      date: sub(new Date(), { minutes: 5 }).toISOString(),
-      reactions: {
-        thumbsUp: 0,
-        wow: 0,
-        heart: 0,
-        rocket: 0,
-        coffee: 0,
-      },
-    },
-  ],
+  posts: [],
+  status: 'idle',
+  error: null,
 }
+
+export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
+  try {
+    const response = await axios.get(POSTS_URL)
+    return response.data
+  } catch (error) {
+    if (error instanceof Error) {
+      return error.message
+    }
+  }
+})
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -64,12 +55,12 @@ const postsSlice = createSlice({
       reducer(state, action: PayloadAction<Post>) {
         state.posts.push(action.payload)
       },
-      prepare(title: string, content: string, userId: string) {
+      prepare(title: string, body: string, userId: string) {
         return {
           payload: {
             id: nanoid(), // nanoid is a function from redux toolkit that generates a unique ID string
             title,
-            content,
+            body,
             date: new Date().toISOString(),
             userId,
             reactions: {
@@ -94,10 +85,42 @@ const postsSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchPosts.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+
+        // Adding date and reactions
+        let min = 1
+        const loadedPosts = action.payload.map((post: Post) => {
+          post.date = sub(new Date(), { minutes: min++ }).toISOString()
+          post.reactions = {
+            thumbsUp: 0,
+            wow: 0,
+            heart: 0,
+            rocket: 0,
+            coffee: 0,
+          }
+          return post
+        })
+
+        // Add any fetched posts to the array
+        state.posts = state.posts.concat(loadedPosts)
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message || null
+      })
+  },
 })
 
 export const { postAdded, reactionAdded } = postsSlice.actions
 
 export const selectAllPosts = (state: RootState) => state.posts.posts
+export const getPostsStatus = (state: RootState) => state.posts.status
+export const getPostsError = (state: RootState) => state.posts.error
 
 export default postsSlice.reducer

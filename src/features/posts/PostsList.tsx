@@ -1,34 +1,46 @@
-import React from 'react'
-import { selectAllPosts } from './postsSlice'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import PostsExcerpt from './PostsExcerpt'
 
-import PostAuthor from './PostAuthor'
-import TimeAgo from './TimeAgo'
-import ReactionButtons from './ReactionButtons'
+import { useAppSelector, useAppDispatch } from '../../app/hooks'
+
+import {
+  fetchPosts,
+  selectAllPosts,
+  getPostsStatus,
+  getPostsError,
+} from './postsSlice'
 
 const PostsList: React.FC = () => {
-  const posts = useSelector(selectAllPosts)
+  const dispatch = useAppDispatch()
 
-  const orderedPosts = posts
-    .slice()
-    .sort((a, b) => b.date.localeCompare(a.date))
+  const posts = useAppSelector(selectAllPosts)
+  const postsStatus = useAppSelector(getPostsStatus)
+  const error = useAppSelector(getPostsError)
 
-  const renderedPosts = orderedPosts.map((post) => (
-    <article className='rounded-xl border border-zinc-500 p-5' key={post.id}>
-      <h3 className='text-3xl font-semibold mb-2'>{post.title}</h3>
-      <p className='text-xl font-light'>{post.content.substring(0, 100)}</p>
-      <p>
-        <PostAuthor userId={post.userId} />
-        <TimeAgo timestamp={post.date} />
-      </p>
-      <ReactionButtons post={post} />
-    </article>
-  ))
+  useEffect(() => {
+    if (postsStatus === 'idle') {
+      dispatch(fetchPosts())
+    }
+  }, [postsStatus, dispatch])
+
+  let content
+  if (postsStatus === 'loading') {
+    content = <p>"Loading..."</p>
+  } else if (postsStatus === 'succeeded') {
+    const orderedPosts = posts
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date))
+    content = orderedPosts.map((post) => (
+      <PostsExcerpt key={post.id} post={post} />
+    ))
+  } else if (postsStatus === 'failed') {
+    content = <div>{error}</div>
+  }
 
   return (
     <section className='mx-auto w-[90vw]'>
       <h2 className='text-4xl font-semibold mb-6'>Posts</h2>
-      <div className='grid grid-cols-1 gap-3'>{renderedPosts}</div>
+      <div className='grid grid-cols-1 gap-3'>{content}</div>
     </section>
   )
 }
