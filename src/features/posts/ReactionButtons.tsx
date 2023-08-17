@@ -28,13 +28,13 @@ const ReactionButtons: React.FC<ReactionButtonsProps> = ({ post }) => {
         onClick={() =>
           dispatch(
             reactionAdded({
-              postId: post.id,
+              postId: post.id || '',
               reaction: reactionKey,
             })
           )
         }
       >
-        {emoji} {post.reactions[reactionKey]}
+        {emoji} {post.reactions ? post.reactions[reactionKey] : 0}
       </button>
     )
   })

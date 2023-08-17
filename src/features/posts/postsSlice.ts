@@ -16,10 +16,10 @@ interface PostReactions {
 }
 
 export interface Post {
-  id: string
+  id?: string
   title: string
   body: string
-  userId?: string
+  userId: string
   date?: string
   reactions?: PostReactions
 }
@@ -159,6 +159,8 @@ const postsSlice = createSlice({
         state.error = action.error.message || null
       })
       .addCase(addNewPost.fulfilled, (state, action) => {
+        console.log(action.payload)
+
         action.payload.userId = Number(action.payload.userId)
         action.payload.date = new Date().toISOString()
         action.payload.reactions = {
@@ -179,6 +181,7 @@ const postsSlice = createSlice({
         }
 
         const { id } = action.payload
+        action.payload.userId = Number(action.payload.userId)
         action.payload.date = new Date().toISOString()
         const posts = state.posts.filter((post) => post.id !== id)
         state.posts = [...posts, action.payload]

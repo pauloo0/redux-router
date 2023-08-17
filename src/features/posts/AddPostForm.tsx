@@ -35,7 +35,7 @@ const AddPostForm: React.FC = () => {
           addNewPost({
             title,
             body: content,
-            id: userId,
+            userId,
           })
         ).unwrap()
 

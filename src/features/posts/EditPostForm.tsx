@@ -15,12 +15,12 @@ const EditPostForm: React.FC = () => {
 
   const [title, setTitle] = useState(post?.title || '')
   const [content, setContent] = useState(post?.body || '')
-  const [userId, setUserId] = useState(post?.userId)
+  const [userId, setUserId] = useState(post?.userId || '')
   const [requestStatus, setRequestStatus] = useState('idle')
 
   const dispatch = useAppDispatch()
 
-  if (!post) return <PostNotFound />
+  if (!post || !postId) return <PostNotFound />
 
   const onTitleChanged = (e: React.ChangeEvent<HTMLInputElement>) =>
     setTitle(e.target.value)
@@ -69,7 +69,7 @@ const EditPostForm: React.FC = () => {
   const onDeletePostClicked = () => {
     try {
       setRequestStatus('pending')
-      dispatch(deletePost(post.id)).unwrap()
+      dispatch(deletePost(postId)).unwrap()
 
       setTitle('')
       setContent('')
