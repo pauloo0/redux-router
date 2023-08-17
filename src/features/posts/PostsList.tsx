@@ -2,6 +2,8 @@ import React from 'react'
 import { selectAllPosts } from './postsSlice'
 import { useSelector } from 'react-redux'
 
+import PostAuthor from './PostAuthor'
+
 const PostsList: React.FC = () => {
   const posts = useSelector(selectAllPosts)
 
@@ -9,6 +11,9 @@ const PostsList: React.FC = () => {
     <article className='rounded-xl border border-zinc-500 p-5' key={post.id}>
       <h3 className='text-3xl font-semibold mb-2'>{post.title}</h3>
       <p className='text-xl font-light'>{post.content.substring(0, 100)}</p>
+      <p>
+        <PostAuthor userId={post.userId} />
+      </p>
     </article>
   ))
 
