@@ -17,7 +17,7 @@ const PostsExcerpt: React.FC<PostsExcerptProps> = ({ post }) => {
       <h3 className='text-3xl font-semibold mb-2'>{post.title}</h3>
       <p className='text-xl font-light'>{post.body.substring(0, 75)}...</p>
       <p className='flex items-center justify-start space-x-4'>
-        <Link to={`post/${post.id}`} className='hover:underline'>
+        <Link to={`/post/${post.id}`} className='hover:underline'>
           View Post
         </Link>
         <PostAuthor userId={post.userId} />
