@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { nanoid } from '@reduxjs/toolkit' //random ID generator
+import { useAppDispatch } from '../../app/hooks'
 
 import { postAdded } from './postsSlice'
 
 const AddPostForm: React.FC = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -17,13 +16,7 @@ const AddPostForm: React.FC = () => {
 
   const onSavePostClicked = () => {
     if (title && content) {
-      dispatch(
-        postAdded({
-          id: nanoid(),
-          title,
-          content,
-        })
-      )
+      dispatch(postAdded(title, content))
 
       setTitle('')
       setContent('')
