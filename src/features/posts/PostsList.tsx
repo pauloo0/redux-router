@@ -8,7 +8,11 @@ import TimeAgo from './TimeAgo'
 const PostsList: React.FC = () => {
   const posts = useSelector(selectAllPosts)
 
-  const renderedPosts = posts.map((post) => (
+  const orderedPosts = posts
+    .slice()
+    .sort((a, b) => b.date.localeCompare(a.date))
+
+  const renderedPosts = orderedPosts.map((post) => (
     <article className='rounded-xl border border-zinc-500 p-5' key={post.id}>
       <h3 className='text-3xl font-semibold mb-2'>{post.title}</h3>
       <p className='text-xl font-light'>{post.content.substring(0, 100)}</p>
