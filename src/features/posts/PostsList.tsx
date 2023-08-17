@@ -3,6 +3,7 @@ import { selectAllPosts } from './postsSlice'
 import { useSelector } from 'react-redux'
 
 import PostAuthor from './PostAuthor'
+import TimeAgo from './TimeAgo'
 
 const PostsList: React.FC = () => {
   const posts = useSelector(selectAllPosts)
@@ -13,6 +14,7 @@ const PostsList: React.FC = () => {
       <p className='text-xl font-light'>{post.content.substring(0, 100)}</p>
       <p>
         <PostAuthor userId={post.userId} />
+        <TimeAgo timestamp={post.date} />
       </p>
     </article>
   ))
