@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { selectPostById, updatePost } from './postsSlice'
+import { selectPostById, updatePost, deletePost } from './postsSlice'
 import { selectAllUsers } from '../users/usersSlice'
 import PostNotFound from './PostNotFound'
 
@@ -66,6 +66,24 @@ const EditPostForm: React.FC = () => {
     </option>
   ))
 
+  const onDeletePostClicked = () => {
+    try {
+      setRequestStatus('pending')
+      dispatch(deletePost(post.id)).unwrap()
+
+      setTitle('')
+      setContent('')
+      setUserId('')
+      navigate(`/`)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log('Failed to delete the post: ', error.message)
+      }
+    } finally {
+      setRequestStatus('idle')
+    }
+  }
+
   return (
     <section className='mx-auto w-[90vw]'>
       <h2 className='text-4xl font-semibold mb-6'>Edit Post</h2>
@@ -96,7 +114,6 @@ const EditPostForm: React.FC = () => {
         </label>
         <select
           id='postAuthor'
-          value={userId}
           defaultValue={userId}
           onChange={onAuthorChanged}
           className='px-3 py-2 text-zinc-900 text-xl'
@@ -111,6 +128,12 @@ const EditPostForm: React.FC = () => {
           disabled={!canSave}
         >
           Save Post
+        </button>
+        <button
+          className='mt-6 w-full bg-zinc-200 text-zinc-900 py-1 rounded-md text-xl'
+          onClick={onDeletePostClicked}
+        >
+          Delete Post
         </button>
       </form>
     </section>

@@ -76,6 +76,21 @@ export const updatePost = createAsyncThunk(
   }
 )
 
+export const deletePost = createAsyncThunk(
+  'posts/deletePost',
+  async (postId: string) => {
+    try {
+      const response = await axios.delete(`${POSTS_URL}/${postId}`)
+      if (response?.status === 200) return postId
+      return `${response?.status}: ${response?.statusText}`
+    } catch (error) {
+      if (error instanceof Error) {
+        return error.message
+      }
+    }
+  }
+)
+
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
@@ -167,6 +182,16 @@ const postsSlice = createSlice({
         action.payload.date = new Date().toISOString()
         const posts = state.posts.filter((post) => post.id !== id)
         state.posts = [...posts, action.payload]
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        if (!action.payload) {
+          console.log('Delete could not complete')
+          console.log(action.payload)
+          return
+        }
+        const id = action.payload
+        const posts = state.posts.filter((post) => post.id !== id)
+        state.posts = posts
       })
   },
 })
