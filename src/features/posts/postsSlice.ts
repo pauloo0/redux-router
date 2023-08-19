@@ -76,12 +76,28 @@ export const updatePost = createAsyncThunk(
   }
 )
 
+// export const deletePost = createAsyncThunk(
+//   'posts/deletePost',
+//   async (postId: string) => {
+//     try {
+//       const response = await axios.delete(`${POSTS_URL}/${postId}`)
+//       if (response?.status === 200) return postId
+//       return `${response?.status}: ${response?.statusText}`
+//     } catch (error) {
+//       if (error instanceof Error) {
+//         return error.message
+//       }
+//     }
+//   }
+// )
+
 export const deletePost = createAsyncThunk(
   'posts/deletePost',
-  async (postId: string) => {
+  async (initialPost: Post) => {
+    const { id } = initialPost
     try {
-      const response = await axios.delete(`${POSTS_URL}/${postId}`)
-      if (response?.status === 200) return postId
+      const response = await axios.delete(`${POSTS_URL}/${id}`)
+      if (response?.status === 200) return initialPost.id
       return `${response?.status}: ${response?.statusText}`
     } catch (error) {
       if (error instanceof Error) {

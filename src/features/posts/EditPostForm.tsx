@@ -69,7 +69,7 @@ const EditPostForm: React.FC = () => {
   const onDeletePostClicked = () => {
     try {
       setRequestStatus('pending')
-      dispatch(deletePost(postId)).unwrap()
+      dispatch(deletePost(post)).unwrap()
 
       setTitle('')
       setContent('')
