@@ -15,7 +15,7 @@ const EditPostForm: React.FC = () => {
 
   const [title, setTitle] = useState(post?.title || '')
   const [content, setContent] = useState(post?.body || '')
-  const [userId, setUserId] = useState(post?.userId || '')
+  const [userId, setUserId] = useState(post?.userId || 0)
   const [requestStatus, setRequestStatus] = useState('idle')
 
   const dispatch = useAppDispatch()
@@ -27,7 +27,7 @@ const EditPostForm: React.FC = () => {
   const onContentChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
     setContent(e.target.value)
   const onAuthorChanged = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setUserId(e.target.value)
+    setUserId(Number(e.target.value))
 
   const canSave =
     [title, content, userId].every(Boolean) && requestStatus === 'idle'
@@ -48,7 +48,7 @@ const EditPostForm: React.FC = () => {
 
         setTitle('')
         setContent('')
-        setUserId('')
+        setUserId(0)
         navigate(`/post/${postId}`)
       } catch (error) {
         if (error instanceof Error) {
@@ -73,7 +73,7 @@ const EditPostForm: React.FC = () => {
 
       setTitle('')
       setContent('')
-      setUserId('')
+      setUserId(0)
       navigate(`/`)
     } catch (error) {
       if (error instanceof Error) {

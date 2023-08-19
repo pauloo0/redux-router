@@ -19,7 +19,7 @@ export interface Post {
   id?: string
   title: string
   body: string
-  userId: string
+  userId: number
   date?: string
   reactions?: PostReactions
 }
@@ -76,21 +76,6 @@ export const updatePost = createAsyncThunk(
   }
 )
 
-// export const deletePost = createAsyncThunk(
-//   'posts/deletePost',
-//   async (postId: string) => {
-//     try {
-//       const response = await axios.delete(`${POSTS_URL}/${postId}`)
-//       if (response?.status === 200) return postId
-//       return `${response?.status}: ${response?.statusText}`
-//     } catch (error) {
-//       if (error instanceof Error) {
-//         return error.message
-//       }
-//     }
-//   }
-// )
-
 export const deletePost = createAsyncThunk(
   'posts/deletePost',
   async (initialPost: Post) => {
@@ -115,7 +100,7 @@ const postsSlice = createSlice({
       reducer(state, action: PayloadAction<Post>) {
         state.posts.push(action.payload)
       },
-      prepare(title: string, body: string, userId: string) {
+      prepare(title: string, body: string, userId: number) {
         return {
           payload: {
             id: nanoid(), // nanoid is a function from redux toolkit that generates a unique ID string

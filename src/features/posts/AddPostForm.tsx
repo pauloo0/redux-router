@@ -12,7 +12,7 @@ const AddPostForm: React.FC = () => {
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [userId, setUserId] = useState('')
+  const [userId, setUserId] = useState(0)
   const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
   const users = useAppSelector(selectAllUsers)
@@ -22,7 +22,7 @@ const AddPostForm: React.FC = () => {
   const onContentChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
     setContent(e.target.value)
   const onAuthorChanged = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setUserId(e.target.value)
+    setUserId(Number(e.target.value))
 
   const canSave =
     [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
@@ -41,7 +41,7 @@ const AddPostForm: React.FC = () => {
 
         setTitle('')
         setContent('')
-        setUserId('')
+        setUserId(0)
         navigate('/')
       } catch (error) {
         console.log('Failed to save the post: ', error)
