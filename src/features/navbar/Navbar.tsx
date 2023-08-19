@@ -10,6 +10,7 @@ const Navbar: React.FC = () => {
       <div className='flex items-center justify-center space-x-4 text-xl'>
         <NavLink to='/'>Home</NavLink>
         <NavLink to='/post'>Posts</NavLink>
+        <NavLink to='/user'>Users</NavLink>
       </div>
     </nav>
   )
