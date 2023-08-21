@@ -1,4 +1,4 @@
-import { createSlice, nanoid, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { sub } from 'date-fns' // date-fns is a library that provides functions for manipulating dates
 import axios from 'axios'
 
@@ -96,29 +96,6 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    postAdded: {
-      reducer(state, action: PayloadAction<Post>) {
-        state.posts.push(action.payload)
-      },
-      prepare(title: string, body: string, userId: number) {
-        return {
-          payload: {
-            id: nanoid(), // nanoid is a function from redux toolkit that generates a unique ID string
-            title,
-            body,
-            date: new Date().toISOString(),
-            userId,
-            reactions: {
-              thumbsUp: 0,
-              wow: 0,
-              heart: 0,
-              rocket: 0,
-              coffee: 0,
-            },
-          },
-        }
-      },
-    },
     reactionAdded(
       state,
       action: PayloadAction<{ postId: string; reaction: keyof PostReactions }>
@@ -200,7 +177,7 @@ const postsSlice = createSlice({
   },
 })
 
-export const { postAdded, reactionAdded } = postsSlice.actions
+export const { reactionAdded } = postsSlice.actions
 
 export const selectAllPosts = (state: RootState) => state.posts.posts
 export const getPostsStatus = (state: RootState) => state.posts.status
